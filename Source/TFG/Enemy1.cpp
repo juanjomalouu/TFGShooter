@@ -5,8 +5,11 @@
 
 #include "Components/BoxComponent.h"
 #include "Monster_Basic.h"
-#include "Perception/AIPerceptionComponent.h"
-#include "Perception/AISenseConfig_Sight.h"
+//#include "Perception/AIPerceptionComponent.h"
+//#include "Perception/AISenseConfig_Sight.h"
+#include <Runtime/AIModule/Classes/Perception/AIPerceptionComponent.h>
+#include <Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h>
+
 
 // Sets default values
 AEnemy1::AEnemy1()
@@ -55,6 +58,26 @@ void AEnemy1::BeginPlay()
 void AEnemy1::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (!CurrentVelocity.IsZero())
+	{
+		NewLocation = GetActorLocation() + CurrentVelocity * DeltaTime;
+		if (BackToBaseLocation)
+		{
+			if ((NewLocation - BaseLocation).SizeSquared2D() < DistanceSquared)
+			{
+				DistanceSquared = (NewLocation - BaseLocation).SizeSquared2D();
+			}
+			else
+			{
+				CurrentVelocity = FVector::ZeroVector;
+				DistanceSquared = BIG_NUMBER;
+				BackToBaseLocation = false;
+
+				SetNewRotation(GetActorForwardVector(), GetActorLocation());
+			}
+		}
+		SetActorLocation(NewLocation);
+	}
 
 }
 
@@ -68,17 +91,65 @@ void AEnemy1::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy1::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
+	AMonster_Basic* Char = Cast<AMonster_Basic>(OtherActor);
+
+	if (Char)
+	{
+		Char->DealDamage(DamageValue);
+
+	}
+
 }
 
 void AEnemy1::OnSensed(const TArray<AActor*>& UpdatedActors)
 {
+	for (int i = 0; i < UpdatedActors.Num(); i++)
+	{
+		FActorPerceptionBlueprintInfo Info;
+		AIPerComp->GetActorsPerception(UpdatedActors[i], Info);
+
+		if (Info.LastSensedStimuli[0].WasSuccessfullySensed())
+		{
+			FVector dir = UpdatedActors[i]->GetActorLocation() - GetActorLocation();
+			dir.Z = 0.0f;
+
+			CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
+
+			SetNewRotation(UpdatedActors[i]->GetActorLocation(), GetActorLocation());
+		}
+		else
+		{
+			FVector dir = BaseLocation - GetActorLocation();
+			dir.Z = 0.0f;
+
+			if (dir.SizeSquared2D() > 1.0f)
+			{
+				CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
+				BackToBaseLocation = true;
+
+				SetNewRotation(BaseLocation, GetActorLocation());
+			}
+		}
+	}
 }
 
 void AEnemy1::SetNewRotation(FVector TargetPosition, FVector CurrentPosition)
 {
+	FVector NewDirection = TargetPosition - CurrentPosition;
+	NewDirection.Z = 0.0f;
+
+	EnemyRotation = NewDirection.Rotation();
+
+	SetActorRotation(EnemyRotation);
 }
 
 void AEnemy1::DealDamage(float DamageAmount)
 {
+	Health -= DamageAmount;
+
+	if (Health <= 0.0f)
+	{
+		Destroy();
+	}
 }
 

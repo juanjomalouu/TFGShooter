@@ -13,7 +13,7 @@
 #include "Animation/AnimInstance.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "Monster_Basic_Game_Mode.h"
+#include "Monster_Basic_GameMode.h"
 
 // Sets default values
 AMonster_Basic::AMonster_Basic()
@@ -194,5 +194,23 @@ void AMonster_Basic::TurnAtRate(float Rate)
 void AMonster_Basic::LookAtRate(float Rate)
 {
 	AddControllerPitchInput(Rate * LookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void AMonster_Basic::DealDamage(float DamageAmount)
+{
+	Health -= DamageAmount;
+
+	if (Health <= 0.0f)
+	{
+		//Restart the game
+		AMonster_Basic_GameMode* MyGameMode =
+			Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+		if (MyGameMode)
+		{
+			MyGameMode->RestartGameplay(false);
+		}
+		Destroy();
+	}
 }
 

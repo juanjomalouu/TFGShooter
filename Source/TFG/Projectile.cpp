@@ -5,7 +5,8 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
-//#include "Enemy.h"
+#include "Enemy1.h"
+#include "Monster_Basic.h"
 
 
 // Sets default values
@@ -49,5 +50,22 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
+	AEnemy1* Enemy = Cast<AEnemy1>(OtherActor);
+
+	if (Enemy)
+	{
+		Enemy->DealDamage(DamageValue);
+		Destroy();
+	}
+	else
+	{
+		AMonster_Basic* Char = Cast<AMonster_Basic>(OtherActor);
+		if (Char)
+		{
+			Char->DealDamage(100);
+			Destroy();
+		}
+			
+	}
 }
 
