@@ -87,6 +87,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Health = 100.0f;
 
+	
+
 public:
 
 	void DealDamage(float DamageAmount);

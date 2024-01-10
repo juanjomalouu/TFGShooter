@@ -33,7 +33,7 @@ public:
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& Hit);
-
+	
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 20.0f;
 

@@ -27,7 +27,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere)
-	class UBoxComponent* DamageCollision;
+	class USphereComponent* DamageCollision2;
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
@@ -65,7 +65,7 @@ public:
 	float Health = 100.0f;
 
 	UPROPERTY(EditAnywhere)
-		float DamageValue = 5.0f;
+		float DamageValue = 100.0f;
 
 public:
 	void DealDamage(float DamageAmount);

@@ -20,7 +20,6 @@ AMonster_Basic::AMonster_Basic()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 	GetCapsuleComponent()->InitCapsuleSize(40.0f, 95.0f);
 
 	TurnRate = 45.0f;

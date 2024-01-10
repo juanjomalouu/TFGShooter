@@ -3,7 +3,7 @@
 
 #include "Enemy1.h"
 
-#include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "Monster_Basic.h"
 //#include "Perception/AIPerceptionComponent.h"
 //#include "Perception/AISenseConfig_Sight.h"
@@ -17,8 +17,8 @@ AEnemy1::AEnemy1()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	DamageCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Damage Collision"));
-	DamageCollision->SetupAttachment(RootComponent);
+	DamageCollision2 = CreateDefaultSubobject<USphereComponent>(TEXT("Damage Collision"));
+	DamageCollision2->SetupAttachment(RootComponent);
 
 	AIPerComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AI Perception Component"));
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
@@ -48,7 +48,7 @@ void AEnemy1::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	DamageCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemy1::OnHit);
+	DamageCollision2->OnComponentBeginOverlap.AddDynamic(this, &AEnemy1::OnHit);
 
 	BaseLocation = this->GetActorLocation();
 

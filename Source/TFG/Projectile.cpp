@@ -14,7 +14,6 @@ AProjectile::AProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collision"));
 	CollisionSphere->InitSphereRadius(20.0f);
 
@@ -51,7 +50,6 @@ void AProjectile::Tick(float DeltaTime)
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
 	AEnemy1* Enemy = Cast<AEnemy1>(OtherActor);
-
 	if (Enemy)
 	{
 		Enemy->DealDamage(DamageValue);
@@ -62,10 +60,11 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		AMonster_Basic* Char = Cast<AMonster_Basic>(OtherActor);
 		if (Char)
 		{
-			Char->DealDamage(100);
+			Char->DealDamage(DamageValue);
 			Destroy();
 		}
 			
 	}
 }
+
 

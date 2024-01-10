@@ -14,12 +14,17 @@ class TFG_API AMonster_Basic_GameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
-	//ESTE NO ES EL GAMEMODE
+	//ESTE SI ES EL GAMEMODE
 public:
 	void RestartGameplay(bool Won);
 
+
+
 private:
 	void ResetLevel();
+
+private:
+	void OpenNextLevel();
 
 public:
 	UPROPERTY(BlueprintReadOnly)

@@ -11,18 +11,18 @@ void AMonster_Basic_Game_Mode::BeginPlay()
 	GetWorldTimerManager().SetTimer(CountDownTimerHandle, this,
 		&AMonster_Basic_Game_Mode::CountdownTimer, 1.0f, true, 1.0f);
 }
-
+//ESTE NO ESS!!!!!!!!!!!!!!!!! DE VERDAD QUE ESTE NO
 void AMonster_Basic_Game_Mode::RestartGameplay(bool Won)
 {
-	if (Won)
+	ResetLevel();
+	/*if (Won)
 	{
-		ResetLevel();
 	}
 	else
 	{
 		FTimerHandle TimerHandle;
 		GetWorldTimerManager().SetTimer(TimerHandle, this, &AMonster_Basic_Game_Mode::ResetLevel, 3.0f);
-	}
+	}*/
 }
 
 void AMonster_Basic_Game_Mode::ResetLevel()
