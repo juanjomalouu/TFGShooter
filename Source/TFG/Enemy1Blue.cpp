@@ -35,6 +35,7 @@ AEnemy1Blue::AEnemy1Blue()
 	MovementSpeed = 375.0f;
 
 	DistanceSquared = BIG_NUMBER;
+
 }
 
 // Called when the game starts or when spawned

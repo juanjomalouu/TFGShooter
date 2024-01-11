@@ -6,11 +6,14 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Enemy1Blue.h"
 #include "Monster_Basic.h"
+#include "Enemy1.h"
+#include "EnemyBallRed.h"
+#include "EnemyBallBlue.h"
 
 // Sets default values
 ASecondProjectile::ASecondProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collision"));
@@ -36,7 +39,7 @@ void ASecondProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &ASecondProjectile::OnHit);
-	
+
 }
 
 // Called every frame
@@ -48,10 +51,10 @@ void ASecondProjectile::Tick(float DeltaTime)
 
 void ASecondProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
-	AEnemy1Blue* Enemy = Cast<AEnemy1Blue>(OtherActor);
-	if (Enemy)
+	AEnemy1Blue* EnemyBlue = Cast<AEnemy1Blue>(OtherActor);
+	if (EnemyBlue)
 	{
-		Enemy->DealDamage(DamageValue);
+		EnemyBlue->DealDamage(DamageValue);
 		Destroy();
 	}
 	else
@@ -62,8 +65,20 @@ void ASecondProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 			Char->DealDamage(DamageValue);
 			Destroy();
 		}
+		else
+		{
+			AEnemyBallBlue* EnemyBallBlue = Cast <AEnemyBallBlue>(OtherActor);
+			if (EnemyBallBlue)
+			{
+				EnemyBallBlue->DealDamage(DamageValue);
+				Destroy();
+			}
+			AEnemy1* Enemy1 = Cast<AEnemy1>(OtherActor);
+			if (Enemy1) Destroy();
+			AEnemyBallRed* EnemyBallRed = Cast<AEnemyBallRed>(OtherActor);
+			if (EnemyBallRed) Destroy();
+		}
 
 	}
+	//Destroy();
 }
-
-

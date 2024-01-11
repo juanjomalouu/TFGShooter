@@ -7,12 +7,15 @@
 
 #include "Enemy1.h"
 #include "Monster_Basic.h"
+#include "Enemy1Blue.h"
+#include "EnemyBallBlue.h"
+#include "EnemyBallRed.h"
 
 
 // Sets default values
 AProjectile::AProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collision"));
 	CollisionSphere->InitSphereRadius(20.0f);
@@ -35,7 +38,7 @@ AProjectile::AProjectile()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnHit);
 
 }
@@ -63,8 +66,19 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 			Char->DealDamage(DamageValue);
 			Destroy();
 		}
-			
+		else
+		{
+			AEnemyBallRed* EnemyBallRed = Cast <AEnemyBallRed>(OtherActor);
+			if (EnemyBallRed)
+			{
+				EnemyBallRed->DealDamage(DamageValue);
+			}
+			AEnemy1Blue* EnemyBlue = Cast<AEnemy1Blue>(OtherActor);
+			if (EnemyBlue) Destroy();
+			AEnemyBallBlue* EnemyBallBlue = Cast<AEnemyBallBlue>(OtherActor);
+			if (EnemyBallBlue) Destroy();
+		}
+
 	}
+	//Destroy();
 }
-
-

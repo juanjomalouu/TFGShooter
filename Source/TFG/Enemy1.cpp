@@ -41,6 +41,7 @@ AEnemy1::AEnemy1()
 	DistanceSquared = BIG_NUMBER;
 
 
+
 }
 
 // Called when the game starts or when spawned

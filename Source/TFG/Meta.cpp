@@ -33,6 +33,13 @@ void AMeta::Tick(float DeltaTime)
 
 }
 
+bool AMeta::CheckAliveEnemies()
+{
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Enemy"), FoundActors);
+	return FoundActors.Num() > 0;
+}
+
 void AMeta::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
 	AMonster_Basic* Char = Cast<AMonster_Basic>(OtherActor);
@@ -40,9 +47,14 @@ void AMeta::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 	{
 		AMonster_Basic_GameMode* MyGameMode =
 			Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-		if (MyGameMode)
+		if (MyGameMode && !CheckAliveEnemies())
 		{
+			//Si hemos matado a todos enemigos, pasamos al siguiente nivel
 			MyGameMode->RestartGameplay(true);
+		}
+		else
+		{
+			MyGameMode->RestartGameplay(false);
 		}
 		Destroy();
 	}
