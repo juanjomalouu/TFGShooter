@@ -10,6 +10,9 @@
 #include "Enemy1Blue.h"
 #include "EnemyBallBlue.h"
 #include "EnemyBallRed.h"
+#include "EnemyStaticBlue2.h"
+#include "Monster_Basic_GameMode.h"
+#include <Kismet/GameplayStatics.h>
 
 
 // Sets default values
@@ -74,10 +77,21 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 				EnemyBallRed->DealDamage(DamageValue);
 				Destroy();
 			}
-			AEnemy1Blue* EnemyBlue = Cast<AEnemy1Blue>(OtherActor);
-			if (EnemyBlue) Destroy();
-			AEnemyBallBlue* EnemyBallBlue = Cast<AEnemyBallBlue>(OtherActor);
-			if (EnemyBallBlue) Destroy();
+			else
+			{
+				AEnemyStaticBlue2* EnemyStaticBlue2 = Cast<AEnemyStaticBlue2>(OtherActor);
+				if (EnemyStaticBlue2)
+				{
+					AMonster_Basic_GameMode* MyGameMode =
+						Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+					MyGameMode->RestartGameplay(false);
+				}
+				AEnemy1Blue* EnemyBlue = Cast<AEnemy1Blue>(OtherActor);
+				if (EnemyBlue) Destroy();
+				AEnemyBallBlue* EnemyBallBlue = Cast<AEnemyBallBlue>(OtherActor);
+				if (EnemyBallBlue) Destroy();
+			}
+
 		}
 
 	}

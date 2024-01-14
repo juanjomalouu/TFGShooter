@@ -53,7 +53,7 @@ protected:
 
 	void OnFire();
 	void OnSecondFire();
-	void OnExplosion();
+	void OnRestart();
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);

@@ -81,7 +81,7 @@ void AMonster_Basic::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMonster_Basic::OnFire);
 	PlayerInputComponent->BindAction("SecondFire", IE_Pressed, this, &AMonster_Basic::OnSecondFire);
-	PlayerInputComponent->BindAction("Explosion", IE_Pressed, this, &AMonster_Basic::OnExplosion);
+	PlayerInputComponent->BindAction("Explosion", IE_Pressed, this, &AMonster_Basic::OnRestart);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMonster_Basic::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMonster_Basic::MoveRight);
@@ -143,30 +143,17 @@ void AMonster_Basic::OnSecondFire()
 	}
 }
 
-void AMonster_Basic::OnExplosion()
+void AMonster_Basic::OnRestart()
 {
-	if (World != NULL)
-	{
-		if (FireSound != NULL)
+	//Restart the game
+		AMonster_Basic_GameMode* MyGameMode =
+			Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+		if (MyGameMode)
 		{
-			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+			MyGameMode->RestartGameplay(false);
 		}
-
-		if (FireAnimation != NULL && AnimInstance != NULL)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.0f);
-		}
-		
-		SpawnRotation = GetControlRotation();
-		SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
-
-		FActorSpawnParameters ActorSpawnParams;
-		ActorSpawnParams.SpawnCollisionHandlingOverride =
-			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-		World->SpawnActor<AExplosion>(Explosion, SpawnLocation, SpawnRotation, ActorSpawnParams);
-
-	}
+		Destroy();
 }
 
 void AMonster_Basic::MoveForward(float Value)
