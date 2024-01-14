@@ -35,6 +35,6 @@ public:
 		bool bFromSweep, const FHitResult& Hit);
 
 	UPROPERTY(EditAnywhere)
-	float DamageValue = 20.0f;
+	float DamageValue = 100.0f;
 
 };

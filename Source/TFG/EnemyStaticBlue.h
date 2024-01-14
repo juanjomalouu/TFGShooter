@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Character.h"
 #include "EnemyStaticBlue.generated.h"
 
 UCLASS()
-class TFG_API AEnemyStaticBlue : public AActor
+class TFG_API AEnemyStaticBlue : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -22,6 +22,9 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* DamageCollision;
@@ -42,6 +45,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float DamageValue = 100.0f;
+
+	UPROPERTY(EditAnywhere)
+	float InterpolationSpeed = 100.0f;
+
 
 public:
 	void DealDamage(float DamageAmount);

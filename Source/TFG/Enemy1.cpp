@@ -9,6 +9,7 @@
 //#include "Perception/AISenseConfig_Sight.h"
 #include <Runtime/AIModule/Classes/Perception/AIPerceptionComponent.h>
 #include <Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h>
+#include "TimerManager.h"
 
 
 // Sets default values
@@ -106,29 +107,33 @@ void AEnemy1::OnSensed(const TArray<AActor*>& UpdatedActors)
 {
 	for (int i = 0; i < UpdatedActors.Num(); i++)
 	{
-		FActorPerceptionBlueprintInfo Info;
-		AIPerComp->GetActorsPerception(UpdatedActors[i], Info);
-
-		if (Info.LastSensedStimuli[0].WasSuccessfullySensed())
+		AMonster_Basic* Char = Cast<AMonster_Basic>(UpdatedActors[i]);
+		if (Char)
 		{
-			FVector dir = UpdatedActors[i]->GetActorLocation() - GetActorLocation();
-			dir.Z = 0.0f;
+			FActorPerceptionBlueprintInfo Info;
+			AIPerComp->GetActorsPerception(UpdatedActors[i], Info);
 
-			CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
-
-			SetNewRotation(UpdatedActors[i]->GetActorLocation(), GetActorLocation());
-		}
-		else
-		{
-			FVector dir = BaseLocation - GetActorLocation();
-			dir.Z = 0.0f;
-
-			if (dir.SizeSquared2D() > 1.0f)
+			if (Info.LastSensedStimuli[0].WasSuccessfullySensed())
 			{
-				CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
-				BackToBaseLocation = true;
+				FVector dir = UpdatedActors[i]->GetActorLocation() - GetActorLocation();
+				dir.Z = 0.0f;
 
-				SetNewRotation(BaseLocation, GetActorLocation());
+				CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
+
+				SetNewRotation(UpdatedActors[i]->GetActorLocation(), GetActorLocation());
+			}
+			else
+			{
+				FVector dir = BaseLocation - GetActorLocation();
+				dir.Z = 0.0f;
+
+				if (dir.SizeSquared2D() > 1.0f)
+				{
+					CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
+					BackToBaseLocation = true;
+
+					SetNewRotation(BaseLocation, GetActorLocation());
+				}
 			}
 		}
 	}

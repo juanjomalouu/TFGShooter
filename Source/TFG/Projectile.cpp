@@ -72,6 +72,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 			if (EnemyBallRed)
 			{
 				EnemyBallRed->DealDamage(DamageValue);
+				Destroy();
 			}
 			AEnemy1Blue* EnemyBlue = Cast<AEnemy1Blue>(OtherActor);
 			if (EnemyBlue) Destroy();
@@ -80,5 +81,6 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		}
 
 	}
+	
 	//Destroy();
 }

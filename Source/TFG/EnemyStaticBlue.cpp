@@ -6,6 +6,8 @@
 #include "Monster_Basic.h"
 #include <Runtime/AIModule/Classes/Perception/AIPerceptionComponent.h>
 #include <Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h>
+#include <Kismet/GameplayStatics.h>
+#include <Kismet/KismetMathLibrary.h>
 // Sets default values
 AEnemyStaticBlue::AEnemyStaticBlue()
 {
@@ -25,13 +27,32 @@ void AEnemyStaticBlue::BeginPlay()
 	DamageCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemyStaticBlue::OnHit);
 
 }
-
+ 
 // Called every frame
 void AEnemyStaticBlue::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	SetNewRotation(GetActorForwardVector(), GetActorLocation());
+	AActor* TargetActor = UGameplayStatics::GetPlayerPawn(this, 0); // En este ejemplo, asumimos que el jugador es el objeto a mirar.
+
+	if (TargetActor)
+	{
+		// Calcula la rotación para mirar hacia el objetivo
+		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetActor->GetActorLocation());
+
+		// Interpola suavemente hacia la rotación calculada (puedes ajustar la velocidad de interpolación según tus necesidades)
+		FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), LookAtRotation, DeltaTime, InterpolationSpeed);
+
+		// Aplica la nueva rotación al actor
+		SetActorRotation(NewRotation);
+
+		//SetNewRotation(GetActorForwardVector(), GetActorLocation());
+	}
+}
+
+void AEnemyStaticBlue::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 

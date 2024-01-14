@@ -70,4 +70,7 @@ public:
 public:
 	void DealDamage(float DamageAmount);
 
+private:
+	FTimerHandle TimerHandle;
+
 };
