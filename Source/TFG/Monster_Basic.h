@@ -75,6 +75,12 @@ public:
 		class USoundBase* FireSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		class USoundBase* SecondFireSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		class USoundBase* JumpSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		class UAnimMontage* FireAnimation;
 
 	class UAnimInstance* AnimInstance;
@@ -84,12 +90,14 @@ public:
 	FRotator SpawnRotation;
 	FVector SpawnLocation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Health = 100.0f;
 
 	
 
 public:
-
 	void DealDamage(float DamageAmount);
+
+public:
+	void PlayJumpSound();
 };

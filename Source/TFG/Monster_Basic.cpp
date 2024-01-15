@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "Projectile.h"
 #include "SecondProjectile.h"
@@ -75,7 +76,8 @@ void AMonster_Basic::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+//	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMonster_Basic::PlayJumpSound);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 
@@ -131,9 +133,9 @@ void AMonster_Basic::OnSecondFire()
 
 		World->SpawnActor<ASecondProjectile>(SecondProjectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
 
-		if (FireSound != NULL)
+		if (SecondFireSound != NULL)
 		{
-			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+			UGameplayStatics::PlaySoundAtLocation(this, SecondFireSound, GetActorLocation());
 		}
 
 		if (FireAnimation != NULL && AnimInstance != NULL)
@@ -156,11 +158,28 @@ void AMonster_Basic::OnRestart()
 		Destroy();
 }
 
+//void AMonster_Basic::MoveForward(float Value)
+//{
+//	if (Value != 0.0f)
+//	{
+//		AddMovementInput(GetActorForwardVector(), Value);	
+//	}
+//}
+
 void AMonster_Basic::MoveForward(float Value)
 {
 	if (Value != 0.0f)
 	{
-		AddMovementInput(GetActorForwardVector(), Value);
+		FVector LocalRightVector = GetActorRotation().RotateVector(FVector::ForwardVector);
+
+		// Establece manualmente la velocidad lateral
+		FVector NewVelocity = LocalRightVector * Value * 900;
+
+		// Mantén la velocidad en el eje Z (vertical) sin cambios
+		NewVelocity.Z = GetCharacterMovement()->Velocity.Z;
+
+		// Establece la nueva velocidad
+		GetCharacterMovement()->Velocity = NewVelocity;
 	}
 }
 
@@ -168,7 +187,18 @@ void AMonster_Basic::MoveRight(float Value)
 {
 	if (Value != 0.0f)
 	{
-		AddMovementInput(GetActorRightVector(), Value);
+		// Solo aplicar movimiento lateral si el componente de movimiento es válido
+		// Obtén el vector de dirección hacia la derecha del personaje
+		FVector LocalRightVector = GetActorRotation().RotateVector(FVector::RightVector);
+
+		// Establece manualmente la velocidad lateral
+		FVector NewVelocity = LocalRightVector * Value * 900;
+
+		// Mantén la velocidad en el eje Z (vertical) sin cambios
+		NewVelocity.Z = GetCharacterMovement()->Velocity.Z;
+
+		// Establece la nueva velocidad
+		GetCharacterMovement()->Velocity = NewVelocity;
 	}
 }
 
@@ -197,6 +227,29 @@ void AMonster_Basic::DealDamage(float DamageAmount)
 			MyGameMode->RestartGameplay(false);
 		}
 		Destroy();
+	}
+}
+
+void AMonster_Basic::PlayJumpSound()
+{
+
+	if (!GetCharacterMovement()->IsFalling())
+	{
+		// Mensaje de log en la consola
+		UE_LOG(LogTemp, Warning, TEXT("Hello World"));
+
+		if (JumpSound != NULL)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, JumpSound, GetActorLocation());
+		}
+
+		LaunchCharacter(FVector(0, 0, 750.0f), false, true);
+	}
+	else
+	{
+		// Mensaje de log en la consola
+		UE_LOG(LogTemp, Warning, TEXT("AAAA!"));
+
 	}
 }
 
