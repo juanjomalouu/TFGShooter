@@ -12,13 +12,14 @@
 #include "EnemyStaticBlue2.h"
 #include "Monster_Basic_GameMode.h"
 #include <Kismet/GameplayStatics.h>
+#include "Projectile.h"
+#include "EnemyStaticBlue.h"
 
 // Sets default values
 ASecondProjectile::ASecondProjectile()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collision"));
 	CollisionSphere->InitSphereRadius(20.0f);
 
@@ -57,7 +58,9 @@ void ASecondProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 	AEnemy1Blue* EnemyBlue = Cast<AEnemy1Blue>(OtherActor);
 	if (EnemyBlue)
 	{
+
 		EnemyBlue->DealDamage(DamageValue);
+		PlayHitSound();
 		Destroy();
 	}
 	else
@@ -66,6 +69,7 @@ void ASecondProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 		if (Char)
 		{
 			Char->DealDamage(DamageValue);
+			PlayHitSound();
 			Destroy();
 		}
 		else
@@ -74,23 +78,46 @@ void ASecondProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 			if (EnemyBallBlue)
 			{
 				EnemyBallBlue->DealDamage(DamageValue);
+				PlayHitSound();
 				Destroy();
 			}
 			else
 			{
-				AEnemyStaticBlue2* EnemyStaticBlue2 = Cast<AEnemyStaticBlue2>(OtherActor);
-				if (EnemyStaticBlue2)
+				AEnemyStaticBlue* EnemyStaticBlue = Cast <AEnemyStaticBlue>(OtherActor);
+				if (EnemyStaticBlue)
 				{
-					AMonster_Basic_GameMode* MyGameMode =
-						Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-					MyGameMode->RestartGameplay(false);
+					EnemyStaticBlue->DealDamage(DamageValue);
+					PlayHitSound();
+					Destroy();
 				}
-				AEnemy1* Enemy1 = Cast<AEnemy1>(OtherActor);
-				if (Enemy1) Destroy();
-				AEnemyBallRed* EnemyBallRed = Cast<AEnemyBallRed>(OtherActor);
-				if (EnemyBallRed) Destroy();
+				else
+				{
+					AEnemyStaticBlue2* EnemyStaticBlue2 = Cast<AEnemyStaticBlue2>(OtherActor);
+					if (EnemyStaticBlue2)
+					{
+						AMonster_Basic_GameMode* MyGameMode =
+							Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+						MyGameMode->RestartGameplay(false);
+					}
+					AEnemy1* Enemy1 = Cast<AEnemy1>(OtherActor);
+					if (Enemy1) Destroy();
+					AEnemyBallRed* EnemyBallRed = Cast<AEnemyBallRed>(OtherActor);
+					if (EnemyBallRed) Destroy();
+				}
 			}
 		}
 	}
-	//Destroy();
+	AProjectile* proj = Cast<AProjectile>(OtherActor);
+	if (proj != NULL)
+	{
+		Destroy();
+	}
+}
+
+void ASecondProjectile::PlayHitSound()
+{
+	if (HitSound != NULL)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+	}
 }
