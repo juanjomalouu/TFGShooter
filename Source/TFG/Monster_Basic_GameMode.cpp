@@ -57,7 +57,8 @@ void AMonster_Basic_GameMode::OpenNextLevel()
 
 void AMonster_Basic_GameMode::ResetLevel()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), "Gameplay");
+	FString ActualLevel = UGameplayStatics::GetCurrentLevelName(this);
+	UGameplayStatics::OpenLevel(GetWorld(),FName(*ActualLevel));
 }
 
 void AMonster_Basic_GameMode::CountdownTimer()

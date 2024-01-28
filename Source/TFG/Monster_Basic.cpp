@@ -49,7 +49,7 @@ AMonster_Basic::AMonster_Basic()
 	MuzzleLocation->SetupAttachment(GunMesh);
 	MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 	
-	GunOffset = FVector(100.0f, 0.0f, 10.0f);
+	GunOffset = FVector(150.0f, 0.0f, 10.0f);
 }
 
 // Called when the game starts or when spawned

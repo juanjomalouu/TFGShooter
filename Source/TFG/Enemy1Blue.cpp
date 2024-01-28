@@ -21,7 +21,7 @@ AEnemy1Blue::AEnemy1Blue()
 
 	SightConfig->SightRadius = 1250.0f;
 	SightConfig->LoseSightRadius = 1280.0f;
-	SightConfig->PeripheralVisionAngleDegrees = 90.0f;
+	SightConfig->PeripheralVisionAngleDegrees = 180.0f;
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
@@ -32,7 +32,7 @@ AEnemy1Blue::AEnemy1Blue()
 	AIPerComp->OnPerceptionUpdated.AddDynamic(this, &AEnemy1Blue::OnSensed);
 
 	CurrentVelocity = FVector::ZeroVector;
-	MovementSpeed = 375.0f;
+	MovementSpeed = 1000.0f;
 
 	DistanceSquared = BIG_NUMBER;
 

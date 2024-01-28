@@ -13,6 +13,9 @@
 #include "EnemyStaticBlue2.h"
 #include "Monster_Basic_GameMode.h"
 #include <Kismet/GameplayStatics.h>
+#include "EnemyStaticRed.h"
+#include "SecondProjectile.h"
+#include "EnemyStaticBlue.h"
 
 
 // Sets default values
@@ -79,22 +82,49 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 			}
 			else
 			{
-				AEnemyStaticBlue2* EnemyStaticBlue2 = Cast<AEnemyStaticBlue2>(OtherActor);
-				if (EnemyStaticBlue2)
+				AEnemyStaticRed* EnemyStaticRed = Cast <AEnemyStaticRed>(OtherActor);
+				if (EnemyStaticRed)
 				{
-					AMonster_Basic_GameMode* MyGameMode =
-						Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-					MyGameMode->RestartGameplay(false);
+					EnemyStaticRed->DealDamage(DamageValue);
+					PlayHitSound();
+					Destroy();
 				}
-				AEnemy1Blue* EnemyBlue = Cast<AEnemy1Blue>(OtherActor);
-				if (EnemyBlue) Destroy();
-				AEnemyBallBlue* EnemyBallBlue = Cast<AEnemyBallBlue>(OtherActor);
-				if (EnemyBallBlue) Destroy();
+				else
+				{
+					AEnemyStaticBlue2* EnemyStaticBlue2 = Cast<AEnemyStaticBlue2>(OtherActor);
+					if (EnemyStaticBlue2)
+					{
+						AMonster_Basic_GameMode* MyGameMode =
+							Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+						MyGameMode->RestartGameplay(false);
+					}
+					AEnemy1Blue* EnemyBlue = Cast<AEnemy1Blue>(OtherActor);
+					if (EnemyBlue) Destroy();
+					AEnemyBallBlue* EnemyBallBlue = Cast<AEnemyBallBlue>(OtherActor);
+					if (EnemyBallBlue) Destroy();
+					AEnemyStaticBlue* EnemyStaticBlue = Cast<AEnemyStaticBlue>(OtherActor);
+					if (EnemyStaticBlue) Destroy();
+
+				}
 			}
 
 		}
 
 	}
 	
+	//ASecondProjectile* proj = Cast<ASecondProjectile>(OtherActor);
+	//if (proj == NULL)
+	//{
+	//	//Destroy();
+	//}
+	
 	//Destroy();
+}
+
+void AProjectile::PlayHitSound()
+{
+	if (HitSound != NULL)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+	}
 }

@@ -14,6 +14,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "Projectile.h"
 #include "EnemyStaticBlue.h"
+#include "EnemyStaticRed.h"
 
 // Sets default values
 ASecondProjectile::ASecondProjectile()
@@ -99,6 +100,8 @@ void ASecondProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 							Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 						MyGameMode->RestartGameplay(false);
 					}
+					AEnemyStaticRed* EnemyStaticRed = Cast<AEnemyStaticRed>(OtherActor);
+					if (EnemyStaticRed) Destroy();
 					AEnemy1* Enemy1 = Cast<AEnemy1>(OtherActor);
 					if (Enemy1) Destroy();
 					AEnemyBallRed* EnemyBallRed = Cast<AEnemyBallRed>(OtherActor);
