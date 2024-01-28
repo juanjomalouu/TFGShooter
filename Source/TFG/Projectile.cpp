@@ -62,6 +62,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	if (Enemy)
 	{
 		Enemy->DealDamage(DamageValue);
+		PlayHitSound();
 		Destroy();
 	}
 	else
@@ -70,6 +71,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		if (Char)
 		{
 			Char->DealDamage(DamageValue);
+			PlayHitSound();
 			Destroy();
 		}
 		else
@@ -78,6 +80,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 			if (EnemyBallRed)
 			{
 				EnemyBallRed->DealDamage(DamageValue);
+				PlayHitSound();
 				Destroy();
 			}
 			else
@@ -112,11 +115,11 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 
 	}
 	
-	//ASecondProjectile* proj = Cast<ASecondProjectile>(OtherActor);
-	//if (proj == NULL)
-	//{
-	//	//Destroy();
-	//}
+	ASecondProjectile* proj = Cast<ASecondProjectile>(OtherActor);
+	if (proj != NULL)
+	{
+		Destroy();
+	}
 	
 	//Destroy();
 }
