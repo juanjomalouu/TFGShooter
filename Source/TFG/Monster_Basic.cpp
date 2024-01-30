@@ -215,12 +215,14 @@ void AMonster_Basic::LookAtRate(float Rate)
 void AMonster_Basic::DealDamage(float DamageAmount)
 {
 	Health -= DamageAmount;
-
+	UE_LOG(LogTemp, Warning, TEXT("BBBBBBB!"));
 	if (Health <= 0.0f)
 	{
+		PlayDeathSound();
 		//Restart the game
 		AMonster_Basic_GameMode* MyGameMode =
 			Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		UE_LOG(LogTemp, Warning, TEXT("BBBBBBB!"));
 
 		if (MyGameMode)
 		{
@@ -232,7 +234,6 @@ void AMonster_Basic::DealDamage(float DamageAmount)
 
 void AMonster_Basic::PlayJumpSound()
 {
-
 	if (!GetCharacterMovement()->IsFalling())
 	{
 		// Mensaje de log en la consola
@@ -251,5 +252,17 @@ void AMonster_Basic::PlayJumpSound()
 		UE_LOG(LogTemp, Warning, TEXT("AAAA!"));
 
 	}
+}
+
+void AMonster_Basic::PlayDeathSound()
+{
+	if (DeathSound != NULL)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+		// Mensaje de log en la consola
+		UE_LOG(LogTemp, Warning, TEXT("BBBBBBB!"));
+	}
+	// Mensaje de log en la consola
+	UE_LOG(LogTemp, Warning, TEXT("CCCCC!"));
 }
 

@@ -70,7 +70,6 @@ void ASecondProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 		if (Char)
 		{
 			Char->DealDamage(DamageValue);
-			PlayHitSound();
 			Destroy();
 		}
 		else

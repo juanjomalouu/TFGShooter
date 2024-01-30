@@ -93,6 +93,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Health = 100.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		class USoundBase* DeathSound;
+
+public:
+	void PlayDeathSound();
 	
 
 public:
