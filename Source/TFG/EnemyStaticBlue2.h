@@ -46,6 +46,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	float DamageValue = 100.0f;
 
+public:
+	void PlayHitSound();
+
+public:
+	void DestroyAndRestart();
+
+UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	class USoundCue* HitSound;
+
 	UPROPERTY(EditAnywhere)
 	float InterpolationSpeed = 100.0f;
 

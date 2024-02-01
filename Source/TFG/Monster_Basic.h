@@ -99,9 +99,13 @@ public:
 public:
 	void PlayDeathSound();
 	
+public:
+	void GoToMenu();
 
 public:
 	void DealDamage(float DamageAmount);
+
+	void DestroyAndRestart();
 
 public:
 	void PlayJumpSound();

@@ -38,5 +38,17 @@ UFUNCTION()
 UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float EnemyCount = 0;
 
+UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	class USoundBase* WinSound;
+
+UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	class USoundBase* LoseSound;
+
+	bool isSoundOn;
+public:
+	void PlaySound(USoundBase* sound);
+
+	void DestroyAndRestart();
+	void DestroyAndReset();
 
 };

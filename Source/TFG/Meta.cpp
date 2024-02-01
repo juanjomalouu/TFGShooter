@@ -15,7 +15,7 @@ AMeta::AMeta()
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
 
 	RootComponent = CollisionBox;
-
+	isSoundOn = false;
 
 }
 
@@ -45,18 +45,53 @@ void AMeta::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 	AMonster_Basic* Char = Cast<AMonster_Basic>(OtherActor);
 	if (Char)
 	{
-		AMonster_Basic_GameMode* MyGameMode =
-			Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-		if (MyGameMode && !CheckAliveEnemies())
+		if (!CheckAliveEnemies())
 		{
+			PlaySound(WinSound);
+			FTimerHandle TimerHandle;
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &AMeta::DestroyAndRestart, WinSound->GetDuration(), false);
+
 			//Si hemos matado a todos enemigos, pasamos al siguiente nivel
-			MyGameMode->RestartGameplay(true);
 		}
 		else
 		{
-			MyGameMode->RestartGameplay(false);
+			PlaySound(LoseSound);
+			FTimerHandle TimerHandle;
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &AMeta::DestroyAndReset, LoseSound->GetDuration(), false);
 		}
-		Destroy();
 	}
 }
+
+
+
+void AMeta::PlaySound(USoundBase* sound)
+{
+	if (sound != NULL && !isSoundOn)
+	{
+		isSoundOn = true;
+		UGameplayStatics::PlaySoundAtLocation(this, sound, GetActorLocation());
+	}
+}
+
+void AMeta::DestroyAndRestart()
+{
+	AMonster_Basic_GameMode* MyGameMode = Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (MyGameMode)
+	{
+		MyGameMode->RestartGameplay(true);
+	}
+	Destroy();
+}
+
+void AMeta::DestroyAndReset()
+{
+	AMonster_Basic_GameMode* MyGameMode = Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (MyGameMode)
+	{
+		MyGameMode->RestartGameplay(false);
+	}
+	Destroy();
+}
+
+
 

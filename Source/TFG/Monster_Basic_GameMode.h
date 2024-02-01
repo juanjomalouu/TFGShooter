@@ -36,5 +36,8 @@ private:
 	void CountdownTimer();
 
 public:
+	void GoToMenu();
+
+public:
 	void BeginPlay() override;
 };

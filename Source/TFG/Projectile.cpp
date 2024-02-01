@@ -97,9 +97,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 					AEnemyStaticBlue2* EnemyStaticBlue2 = Cast<AEnemyStaticBlue2>(OtherActor);
 					if (EnemyStaticBlue2)
 					{
-						AMonster_Basic_GameMode* MyGameMode =
-							Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-						MyGameMode->RestartGameplay(false);
+						EnemyStaticBlue2->DealDamage(DamageValue);
 					}
 					AEnemy1Blue* EnemyBlue = Cast<AEnemy1Blue>(OtherActor);
 					if (EnemyBlue) Destroy();

@@ -31,4 +31,6 @@ class TFG_API AMonster_Basic_Game_Mode : public AGameMode
 
 	public:
 		void BeginPlay() override;
+		
+
 };

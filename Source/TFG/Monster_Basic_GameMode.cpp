@@ -43,6 +43,10 @@ void AMonster_Basic_GameMode::OpenNextLevel()
 			ActualNumberLevel = FCString::Atoi(*NumberLevel);
 			FString NextLevelName = FString::Printf(TEXT("Gameplay%d"), ActualNumberLevel + 1);
 
+			if (ActualNumberLevel == 13)
+			{
+				UGameplayStatics::OpenLevel(this, FName("MainMenu"));
+			}
 			// Abre el próximo nivel usando UGameplayStatics::OpenLevel
 			UGameplayStatics::OpenLevel(this, FName(*NextLevelName));
 
@@ -70,5 +74,11 @@ void AMonster_Basic_GameMode::CountdownTimer()
 		GetWorldTimerManager().ClearTimer(CountDownTimerHandle);
 		ResetLevel();
 	}
+}
+
+void AMonster_Basic_GameMode::GoToMenu()
+{
+	// Abre el próximo nivel usando UGameplayStatics::OpenLevel
+	UGameplayStatics::OpenLevel(this, FName("MainMenu"));
 }
 

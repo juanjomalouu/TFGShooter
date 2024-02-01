@@ -85,6 +85,10 @@ void AMonster_Basic::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("SecondFire", IE_Pressed, this, &AMonster_Basic::OnSecondFire);
 	PlayerInputComponent->BindAction("Explosion", IE_Pressed, this, &AMonster_Basic::OnRestart);
 
+	PlayerInputComponent->BindAction("Quit", IE_Pressed, this, &AMonster_Basic::GoToMenu);
+	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &AMonster_Basic::GoToMenu);
+
+
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMonster_Basic::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMonster_Basic::MoveRight);
 
@@ -215,22 +219,27 @@ void AMonster_Basic::LookAtRate(float Rate)
 void AMonster_Basic::DealDamage(float DamageAmount)
 {
 	Health -= DamageAmount;
-	UE_LOG(LogTemp, Warning, TEXT("BBBBBBB!"));
 	if (Health <= 0.0f)
 	{
 		PlayDeathSound();
 		//Restart the game
-		AMonster_Basic_GameMode* MyGameMode =
-			Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-		UE_LOG(LogTemp, Warning, TEXT("BBBBBBB!"));
-
-		if (MyGameMode)
-		{
-			MyGameMode->RestartGameplay(false);
-		}
-		Destroy();
+		FTimerHandle TimerHandle;
+		GetWorldTimerManager().SetTimer(TimerHandle, this, &AMonster_Basic::DestroyAndRestart, DeathSound->GetDuration(), false);
 	}
 }
+
+void AMonster_Basic::DestroyAndRestart()
+{
+
+	// Reiniciar el nivel después de que el sonido haya terminado de reproducirse y el objeto se haya destruido
+	AMonster_Basic_GameMode* MyGameMode = Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (MyGameMode)
+	{
+		MyGameMode->RestartGameplay(false);
+	}
+	Destroy();
+}
+
 
 void AMonster_Basic::PlayJumpSound()
 {
@@ -259,10 +268,15 @@ void AMonster_Basic::PlayDeathSound()
 	if (DeathSound != NULL)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
-		// Mensaje de log en la consola
-		UE_LOG(LogTemp, Warning, TEXT("BBBBBBB!"));
 	}
-	// Mensaje de log en la consola
-	UE_LOG(LogTemp, Warning, TEXT("CCCCC!"));
+}
+
+void AMonster_Basic::GoToMenu()
+{
+	AMonster_Basic_GameMode* MyGameMode = Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (MyGameMode)
+	{
+		MyGameMode->GoToMenu();
+	}
 }
 

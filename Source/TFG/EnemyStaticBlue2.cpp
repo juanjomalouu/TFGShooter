@@ -7,6 +7,8 @@
 
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetMathLibrary.h>
+#include "Monster_Basic_GameMode.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AEnemyStaticBlue2::AEnemyStaticBlue2()
@@ -62,10 +64,11 @@ void AEnemyStaticBlue2::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 {
 	AMonster_Basic* Char = Cast<AMonster_Basic>(OtherActor);
 
-	if (Char)
+	/*if (Char)
 	{
+		PlayHitSound();
 		Char->DealDamage(DamageValue);
-	}
+	}*/
 
 }
 
@@ -79,13 +82,35 @@ void AEnemyStaticBlue2::SetNewRotation(FVector TargetPosition, FVector CurrentPo
 	SetActorRotation(EnemyRotation);
 }
 
+void AEnemyStaticBlue2::PlayHitSound()
+{
+	if (HitSound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+	}
+}
+
 void AEnemyStaticBlue2::DealDamage(float DamageAmount)
 {
 	Health -= DamageAmount;
 
 	if (Health <= 0.0f)
 	{
-		Destroy();
+		PlayHitSound();
+		FTimerHandle TimerHandle;
+		GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyStaticBlue2::DestroyAndRestart, HitSound->GetDuration(), false);
 	}
+}
+
+void AEnemyStaticBlue2::DestroyAndRestart()
+{
+
+	// Reiniciar el nivel después de que el sonido haya terminado de reproducirse y el objeto se haya destruido
+	AMonster_Basic_GameMode* MyGameMode = Cast<AMonster_Basic_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (MyGameMode)
+	{
+		MyGameMode->RestartGameplay(false);
+	}
+	Destroy();
 }
 
