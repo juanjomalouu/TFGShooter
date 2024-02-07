@@ -62,8 +62,6 @@ void AMeta::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 	}
 }
 
-
-
 void AMeta::PlaySound(USoundBase* sound)
 {
 	if (sound != NULL && !isSoundOn)
